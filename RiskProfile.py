@@ -169,8 +169,10 @@ def main():
         - Tujuan investasi ≥7 tahun,
         - Dana darurat ≥6 bulan,
         - Tidak ada utang konsumtif tinggi.
+        - **INGAT!!!, investasi adalah kegiatan berisiko,** RISIKO sepenuhnya merupakan tanggung jawab pribadi. ALOKASI diatas adalah contoh penempatan yang disarankan untuk ANDA, **TIDAK MENJAMIN HASIL INVESTASI yang ANDA LAKUKAN**
         """)
 
 # Run the app
 if __name__ == "__main__":
+
     main()
