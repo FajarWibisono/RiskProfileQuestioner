@@ -99,7 +99,7 @@ def main():
         ["A. Lebih dari 50 %", "B. Antara 30 % hingga 50 %", "C. Antara 10 % hingga 29 %", "D. Kurang dari 10 % atau tidak memiliki utang"],
         ["A. Kurang dari 1 bulan", "B. 1 hingga 3 bulan", "C. 3 hingga 12 bulan", "D. Lebih dari 12 bulan"],
         ["A. Tidak tetap atau tidak menentu", "B. Tetap, namun sering mengalami keterlambatan", "C. Tetap dan selalu diterima tepat waktu", "D. Tetap, diterima tepat waktu, dan sering ada bonus/tambahan"],
-        ["A. Untuk dana darurat", "B. Untuk DP rumah dalam 3 tahun ke depan", "C. Untuk biaya kuliah anak dalam 7 tahun ke depan", "D. Untuk dana pensiun dalam 20 tahun ke depan"],
+        ["A. Untuk dana darurat", "B. Untuk membiayai suatu hal (misal: menikah, DP rumah, dll.) dalam 3 tahun ke depan", "C. Untuk biaya kuliah anak dalam 7 tahun ke depan", "D. Untuk dana pensiun dalam 20 tahun ke depan"],
         ["A. Lebih dari 75 %", "B. Antara 50 % hingga 75 %", "C. Antara 25 % hingga 49 %", "D. Kurang dari 25 %"],
         ["A. Tidak bisa", "B. Terkadang bisa, jika ada sisa dana", "C. Bisa, dalam jumlah kecil secara rutin", "D. Bisa, dalam jumlah besar secara rutin"],
         ["A. Sama sekali tidak bisa ditunda", "B. Bisa ditunda kurang dari 1 tahun", "C. Bisa ditunda antara 1 hingga 3 tahun", "D. Bisa ditunda lebih dari 3 tahun"],
@@ -176,3 +176,4 @@ def main():
 if __name__ == "__main__":
 
     main()
+
