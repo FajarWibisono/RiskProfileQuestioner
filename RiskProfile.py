@@ -22,31 +22,29 @@ def get_allocation_recommendation(category):
     """Get allocation recommendation based on risk category."""
     recommendations = {
         "Sangat Konservatif": [
-            "• 60% Deposito/Tabungan",
+            "• 60% Deposito/Tabungan/Logam Mulia",
             "• 30% Sukuk Tabungan/ORI",
             "• 10% Reksa dana pasar uang"
         ],
         "Konservatif": [
             "• 40% Sukuk/ORI (kupon tetap)",
-            "• 30% Deposito",
+            "• 30% Deposito/Logam Mulia",
             "• 20% Reksa dana campuran",
             "• 10% Franchise mikro modal ≤Rp50 juta"
         ],
         "Moderat": [
             "• 30% Saham blue-chip / reksa dana campuran",
-            "• 20% Sukuk/ORI",
-            "• 15% Fintech/P2P Lending (pilih platform terdaftar OJK, risiko menengah)",
-            "• 15% Franchise/usaha skala menengah (Rp50–200 juta)",
-            "• 10% Emas",
+            "• 25% Sukuk/ORI",
+            "• 20% Franchise/usaha skala menengah (Rp50–200 juta)",
+            "• 15% Emas",
             "• 10% Kripto ≤5%"
         ],
         "Agresif": [
-            "• 40–45% Saham / reksa dana saham",
+            "• 45–50% Saham / reksa dana saham",
             "• 15% Pasar obligasi sekunder (ORI/Sukuk)",
-            "• 10% Fintech/P2P Lending (pilih platform terdaftar OJK, risiko tinggi)",
             "• 15% Franchise/usaha baru modal >Rp200 juta",
             "• 10% Properti/Reksa dana properti",
-            "• 10% Kripto/Emas (risiko tinggi)"
+            "• 10% Kripto/Trading Emas (risiko tinggi)"
         ]
     }
     return recommendations.get(category, [])
@@ -55,32 +53,31 @@ def get_allocation_recommendation(category):
 def main():
     # --- Title and Instructions ---
     st.title("RISK PROFILE QUESTIONER")
-    st.markdown("**(HumanisGroup - CTAP Series Tools)**")
-st.markdown("""
-**📋 PETUNJUK PENGISIAN:**
-* Tidak ada jawaban “benar” atau “salah”, "baik" atau "buruk".
-* Pilihlah **SATU** jawaban yang paling menggambarkan diri Anda.
-* Jawablah dengan **JUJUR sebagaimana ADANYA** agar hasil dan rekomendasi sesuai kebutuhan Anda.
-* Isilah dengan **lengkap 20 pertanyaan** yang ada.
-* KAMI TIDAK MENYIMPAN JAWABAN ANDA, **Silahkan Screen-Shot SKOR dan REKOMENDASI**
-""")
+    st.markdown("""
+    **📋 PETUNJUK PENGISIAN:**
+    * Tidak ada jawaban “benar” atau “salah”, "baik" atau "buruk".
+    * Pilihlah **SATU** jawaban yang paling menggambarkan diri Anda.
+    * Jawablah dengan **JUJUR sebagaimana ADANYA** agar hasil dan rekomendasi sesuai kebutuhan Anda.
+    * Isilah dengan **lengkap 20 pertanyaan** yang ada.
+    * KAMI TIDAK MENYIMPAN JAWABAN ANDA, **Silahkan Screen-Shot SKOR dan REKOMENDASI**
+    """)
 
     # --- Questions and Options ---
     questions = [
         "Saham yang baru Anda beli turun 10%. Apa reaksi Anda?",
-        "Seorang teman Anda mendapatkan keuntungan besar dari investasi aset kripto. Apa yang akan Anda lakukan?",
-        "Seberapa sering Anda mengubah atau mengganti pilihan instrumen investasi Anda dalam setahun terakhir?",
+        "Seorang teman Anda mendapatkan keuntungan besar dari investasi aset kripto. Apa yang sekiranya akan Anda lakukan?",
+        "Seberapa sering Anda mengubah atau mengganti pilihan instrumen investasi Anda, dalam setahun terakhir?",
         "Bagaimana reaksi Anda saat kondisi pasar investasi sedang anjlok secara signifikan?",
         "Berapa target keuntungan (return) dari investasi yang Anda harapkan dalam setahun?",
-        "Berapa persentase kerugian maksimum dari total portofolio investasi yang masih bisa Anda toleransi?",
+        "Berapakah besar persentase kerugian maksimum dari total portofolio investasi yang masih bisa Anda toleransi?",
         "Berapa lama jangka waktu Anda berencana untuk tidak menarik atau menggunakan dana yang diinvestasikan ini?",
         "Manakah yang paling menggambarkan pengalaman Anda dalam berinvestasi?",
-        "Bagaimana kondisi dana darurat Anda saat ini (idealnya setara 3 bulan pengeluaran)?",
+        "Bagaimana kondisi dana darurat Anda saat ini (idealnya minimal setara 3 bulan pengeluaran)?",
         "Berapa rasio total cicilan utang bulanan Anda dibandingkan dengan penghasilan bulanan Anda saat ini?",
         "Jika Anda tiba-tiba berhenti bekerja hari ini, berapa lama tabungan yang Anda miliki dapat mencukupi biaya hidup?",
         "Bagaimana sifat penghasilan utama bulanan Anda?",
         "Apa tujuan utama dari dana yang Anda investasikan saat ini?",
-        "Berapa persentase dana yang diinvestasikan ini jika dibandingkan dengan total kekayaan bersih Anda?",
+        "Berapa kira-kira  persentase dana yang diinvestasikan ini jika dibandingkan dengan total kekayaan bersih Anda?",
         "Apakah Anda memiliki kemampuan untuk menambah dana investasi secara rutin?",
         "Seandainya pasar sedang buruk saat target waktu investasi tercapai, seberapa fleksibel Anda menunda tujuan tersebut?",
         "Seberapa penting tingkat likuiditas (kemudahan mencairkan uang) dalam investasi Anda?",
@@ -163,10 +160,6 @@ st.markdown("""
                 st.markdown(item)
         else:
              st.write("Rekomendasi alokasi tidak tersedia untuk kategori ini.")
-
-        # Disclaimer (as per original document)
-        # Note: Age is not collected, so this part is omitted from the app logic.
-        # The disclaimer is informational.
         st.info("""
         **DISCLAIMER:** Responden berusia ≥55 tahun yang masuk Moderat atau Agresif wajib dikonfirmasi ulang oleh penasihat keuangan untuk memastikan:
         - Tujuan investasi ≥7 tahun,
@@ -183,3 +176,4 @@ st.markdown("""
 # Run the app
 if __name__ == "__main__":
     main()
+
