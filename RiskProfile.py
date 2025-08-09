@@ -1,5 +1,7 @@
-﻿# risk_profile_app.py
+# risk_profile_app.py
 import streamlit as st
+import pandas as pd
+import plotly.express as px
 
 # --- Configuration ---
 st.set_page_config(page_title="Risk Profile Questioner", page_icon="📊", layout="centered")
@@ -21,38 +23,57 @@ def get_risk_category(score):
 def get_allocation_recommendation(category):
     """Get allocation recommendation based on risk category."""
     recommendations = {
-        "Sangat Konservatif": [
-            "• 60% Deposito/Tabungan/Logam Mulia",
-            "• 30% Sukuk Tabungan/ORI",
-            "• 10% Reksa dana pasar uang"
-        ],
-        "Konservatif": [
-            "• 40% Sukuk/ORI (kupon tetap)",
-            "• 30% Deposito/Logam Mulia",
-            "• 20% Reksa dana campuran",
-            "• 10% Franchise mikro modal ≤Rp50 juta"
-        ],
-        "Moderat": [
-            "• 30% Saham blue-chip / reksa dana campuran",
-            "• 25% Sukuk/ORI",
-            "• 20% Franchise/usaha skala menengah (Rp50–200 juta)",
-            "• 15% Emas",
-            "• 10% Kripto ≤5%"
-        ],
-        "Agresif": [
-            "• 45–50% Saham / reksa dana saham",
-            "• 15% Pasar obligasi sekunder (ORI/Sukuk)",
-            "• 15% Franchise/usaha baru modal >Rp200 juta",
-            "• 10% Properti/Reksa dana properti",
-            "• 10% Kripto/Trading Emas (risiko tinggi)"
-        ]
+        "Sangat Konservatif": {
+            "labels": ["Deposito/Tabungan", "Sukuk Tabungan/ORI", "Reksa dana pasar uang"],
+            "sizes": [60, 30, 10],
+            "details": [
+                "• 60% Deposito/Tabungan",
+                "• 30% Sukuk Tabungan/ORI",
+                "• 10% Reksa dana pasar uang"
+            ]
+        },
+        "Konservatif": {
+            "labels": ["Sukuk/ORI (kupon tetap)", "Deposito", "Reksa dana campuran", "Franchise mikro (≤Rp50 jt)"],
+            "sizes": [40, 30, 20, 10],
+            "details": [
+                "• 40% Sukuk/ORI (kupon tetap)",
+                "• 30% Deposito",
+                "• 20% Reksa dana campuran",
+                "• 10% Franchise mikro modal ≤Rp50 juta"
+            ]
+        },
+        "Moderat": {
+            "labels": ["Saham/RD campuran", "Sukuk/ORI", "Fintech/P2P Lending", "Franchise menengah (Rp50-200 jt)", "Emas", "Kripto (≤5%)"],
+            "sizes": [30, 20, 15, 15, 10, 10],
+            "details": [
+                "• 30% Saham blue-chip / reksa dana campuran",
+                "• 20% Sukuk/ORI",
+                "• 15% Fintech/P2P Lending (pilih platform terdaftar OJK, risiko menengah)",
+                "• 15% Franchise/usaha skala menengah (Rp50–200 juta)",
+                "• 10% Emas",
+                "• 10% Kripto ≤5 %"
+            ]
+        },
+        "Agresif": {
+            "labels": ["Saham/RD saham", "Obligasi sekunder", "Fintech/P2P Lending", "Franchise baru (>Rp200 jt)", "Properti/RD properti", "Kripto/Emas"],
+            "sizes": [45, 15, 10, 15, 10, 10], # Adjusted to sum to 100
+            "details": [
+                "• 45% Saham / reksa dana saham",
+                "• 15% Pasar obligasi sekunder (ORI/Sukuk)",
+                "• 10% Fintech/P2P Lending (pilih platform terdaftar OJK, risiko tinggi)",
+                "• 15% Franchise/usaha baru modal >Rp200 juta",
+                "• 10% Properti/Reksa dana properti",
+                "• 10% Kripto/Emas (risiko tinggi)"
+            ]
+        }
     }
-    return recommendations.get(category, [])
+    return recommendations.get(category, {"labels": [], "sizes": [], "details": []})
 
 # --- Main App ---
 def main():
     # --- Title and Instructions ---
     st.title("RISK PROFILE QUESTIONER")
+    st.markdown("**(HumanisGroup - CTAP Series Tools)**")
     st.markdown("""
     **📋 PETUNJUK PENGISIAN:**
     * Tidak ada jawaban “benar” atau “salah”, "baik" atau "buruk".
@@ -65,19 +86,19 @@ def main():
     # --- Questions and Options ---
     questions = [
         "Saham yang baru Anda beli turun 10%. Apa reaksi Anda?",
-        "Seorang teman Anda mendapatkan keuntungan besar dari investasi aset kripto. Apa yang sekiranya akan Anda lakukan?",
-        "Seberapa sering Anda mengubah atau mengganti pilihan instrumen investasi Anda, dalam setahun terakhir?",
+        "Seorang teman Anda mendapatkan keuntungan besar dari investasi aset kripto. Apa yang akan Anda lakukan?",
+        "Seberapa sering Anda mengubah atau mengganti pilihan instrumen investasi Anda dalam setahun terakhir?",
         "Bagaimana reaksi Anda saat kondisi pasar investasi sedang anjlok secara signifikan?",
         "Berapa target keuntungan (return) dari investasi yang Anda harapkan dalam setahun?",
-        "Berapakah besar persentase kerugian maksimum dari total portofolio investasi yang masih bisa Anda toleransi?",
+        "Berapa persentase kerugian maksimum dari total portofolio investasi yang masih bisa Anda toleransi?",
         "Berapa lama jangka waktu Anda berencana untuk tidak menarik atau menggunakan dana yang diinvestasikan ini?",
         "Manakah yang paling menggambarkan pengalaman Anda dalam berinvestasi?",
-        "Bagaimana kondisi dana darurat Anda saat ini (idealnya minimal setara 3 bulan pengeluaran)?",
+        "Bagaimana kondisi dana darurat Anda saat ini (idealnya setara 3 bulan pengeluaran)?",
         "Berapa rasio total cicilan utang bulanan Anda dibandingkan dengan penghasilan bulanan Anda saat ini?",
         "Jika Anda tiba-tiba berhenti bekerja hari ini, berapa lama tabungan yang Anda miliki dapat mencukupi biaya hidup?",
         "Bagaimana sifat penghasilan utama bulanan Anda?",
         "Apa tujuan utama dari dana yang Anda investasikan saat ini?",
-        "Berapa kira-kira  persentase dana yang diinvestasikan ini jika dibandingkan dengan total kekayaan bersih Anda?",
+        "Berapa persentase dana yang diinvestasikan ini jika dibandingkan dengan total kekayaan bersih Anda?",
         "Apakah Anda memiliki kemampuan untuk menambah dana investasi secara rutin?",
         "Seandainya pasar sedang buruk saat target waktu investasi tercapai, seberapa fleksibel Anda menunda tujuan tersebut?",
         "Seberapa penting tingkat likuiditas (kemudahan mencairkan uang) dalam investasi Anda?",
@@ -99,7 +120,7 @@ def main():
         ["A. Lebih dari 50 %", "B. Antara 30 % hingga 50 %", "C. Antara 10 % hingga 29 %", "D. Kurang dari 10 % atau tidak memiliki utang"],
         ["A. Kurang dari 1 bulan", "B. 1 hingga 3 bulan", "C. 3 hingga 12 bulan", "D. Lebih dari 12 bulan"],
         ["A. Tidak tetap atau tidak menentu", "B. Tetap, namun sering mengalami keterlambatan", "C. Tetap dan selalu diterima tepat waktu", "D. Tetap, diterima tepat waktu, dan sering ada bonus/tambahan"],
-        ["A. Untuk dana darurat", "B. Untuk membiayai suatu hal (misal: menikah, DP rumah, dll.) dalam 3 tahun ke depan", "C. Untuk biaya kuliah anak dalam 7 tahun ke depan", "D. Untuk dana pensiun dalam 20 tahun ke depan"],
+        ["A. Untuk dana darurat", "B. Untuk DP rumah dalam 3 tahun ke depan", "C. Untuk biaya kuliah anak dalam 7 tahun ke depan", "D. Untuk dana pensiun dalam 20 tahun ke depan"],
         ["A. Lebih dari 75 %", "B. Antara 50 % hingga 75 %", "C. Antara 25 % hingga 49 %", "D. Kurang dari 25 %"],
         ["A. Tidak bisa", "B. Terkadang bisa, jika ada sisa dana", "C. Bisa, dalam jumlah kecil secara rutin", "D. Bisa, dalam jumlah besar secara rutin"],
         ["A. Sama sekali tidak bisa ditunda", "B. Bisa ditunda kurang dari 1 tahun", "C. Bisa ditunda antara 1 hingga 3 tahun", "D. Bisa ditunda lebih dari 3 tahun"],
@@ -154,12 +175,30 @@ def main():
         st.subheader(f"Kategori Klasifikasi Risiko: {risk_category}")
 
         st.subheader("Contoh Alokasi Praktis:")
-        allocation_list = get_allocation_recommendation(risk_category)
-        if allocation_list:
-            for item in allocation_list:
+        
+        # Get allocation data
+        allocation_data = get_allocation_recommendation(risk_category)
+        
+        # Display detailed recommendations
+        if allocation_data["details"]:
+            for item in allocation_data["details"]:
                 st.markdown(item)
         else:
              st.write("Rekomendasi alokasi tidak tersedia untuk kategori ini.")
+
+        # Display pie chart if data is available
+        if allocation_data["labels"] and allocation_data["sizes"]:
+            try:
+                fig = px.pie(
+                    values=allocation_data["sizes"],
+                    names=allocation_data["labels"],
+                    title=f"Alokasi Rekomendasi untuk Profil Risiko {risk_category}",
+                    color_discrete_sequence=px.colors.sequential.RdBu
+                )
+                fig.update_traces(textposition='inside', textinfo='percent+label')
+                st.plotly_chart(fig, use_container_width=True)
+            except Exception as e:
+                st.warning("Gagal menampilkan grafik alokasi.")
 
         # Disclaimer (as per original document)
         # Note: Age is not collected, so this part is omitted from the app logic.
@@ -169,11 +208,15 @@ def main():
         - Tujuan investasi ≥7 tahun,
         - Dana darurat ≥6 bulan,
         - Tidak ada utang konsumtif tinggi.
-        - **INGAT!!!, investasi adalah kegiatan berisiko,** RISIKO sepenuhnya merupakan tanggung jawab pribadi. ALOKASI diatas adalah contoh penempatan yang disarankan untuk ANDA, **TIDAK MENJAMIN HASIL INVESTASI yang ANDA LAKUKAN**
         """)
+        
+        # Additional disclaimer in red
+        st.markdown("")
+        st.markdown(
+            "<span style='color:red; font-weight:bold;'>INVESTASI adalah KEGIATAN BERISIKO !!!, tanggung jawab atas keputusan berinvestasi sepenuhnya adalah TANGGUNG JAWAB PRIBADI, baik berdasarkan tools ini maupun tidak. Inventory Risk Profile TIDAK MENJAMIN HASIL INVESTASI.</span>",
+            unsafe_allow_html=True
+        )
 
 # Run the app
 if __name__ == "__main__":
-
     main()
-
