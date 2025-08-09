@@ -53,6 +53,7 @@ def get_allocation_recommendation(category):
 def main():
     # --- Title and Instructions ---
     st.title("RISK PROFILE QUESTIONER")
+    st.markdown("**(HumanisGroup - CTAP Series Tools)**")
     st.markdown("""
     **📋 PETUNJUK PENGISIAN:**
     * Tidak ada jawaban “benar” atau “salah”, "baik" atau "buruk".
@@ -176,4 +177,5 @@ def main():
 # Run the app
 if __name__ == "__main__":
     main()
+
 
