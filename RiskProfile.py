@@ -1,7 +1,5 @@
 # risk_profile_app.py
 import streamlit as st
-import pandas as pd
-import plotly.express as px
 
 # --- Configuration ---
 st.set_page_config(page_title="Risk Profile Questioner", page_icon="📊", layout="centered")
@@ -23,65 +21,49 @@ def get_risk_category(score):
 def get_allocation_recommendation(category):
     """Get allocation recommendation based on risk category."""
     recommendations = {
-        "Sangat Konservatif": {
-            "labels": ["Deposito/Tabungan", "Sukuk Tabungan/ORI", "Reksa dana pasar uang"],
-            "sizes": [60, 30, 10],
-            "details": [
-                "• 60% Deposito/Tabungan",
-                "• 30% Sukuk Tabungan/ORI",
-                "• 10% Reksa dana pasar uang"
-            ]
-        },
-        "Konservatif": {
-            "labels": ["Sukuk/ORI (kupon tetap)", "Deposito", "Reksa dana campuran", "Franchise mikro (≤Rp50 jt)"],
-            "sizes": [40, 30, 20, 10],
-            "details": [
-                "• 40% Sukuk/ORI (kupon tetap)",
-                "• 30% Deposito",
-                "• 20% Reksa dana campuran",
-                "• 10% Franchise mikro modal ≤Rp50 juta"
-            ]
-        },
-        "Moderat": {
-            "labels": ["Saham/RD campuran", "Sukuk/ORI", "Fintech/P2P Lending", "Franchise menengah (Rp50-200 jt)", "Emas", "Kripto (≤5%)"],
-            "sizes": [30, 20, 15, 15, 10, 10],
-            "details": [
-                "• 30% Saham blue-chip / reksa dana campuran",
-                "• 20% Sukuk/ORI",
-                "• 15% Fintech/P2P Lending (pilih platform terdaftar OJK, risiko menengah)",
-                "• 15% Franchise/usaha skala menengah (Rp50–200 juta)",
-                "• 10% Emas",
-                "• 10% Kripto ≤5 %"
-            ]
-        },
-        "Agresif": {
-            "labels": ["Saham/RD saham", "Obligasi sekunder", "Fintech/P2P Lending", "Franchise baru (>Rp200 jt)", "Properti/RD properti", "Kripto/Emas"],
-            "sizes": [45, 15, 10, 15, 10, 10], # Adjusted to sum to 100
-            "details": [
-                "• 45% Saham / reksa dana saham",
-                "• 15% Pasar obligasi sekunder (ORI/Sukuk)",
-                "• 10% Fintech/P2P Lending (pilih platform terdaftar OJK, risiko tinggi)",
-                "• 15% Franchise/usaha baru modal >Rp200 juta",
-                "• 10% Properti/Reksa dana properti",
-                "• 10% Kripto/Emas (risiko tinggi)"
-            ]
-        }
+        "Sangat Konservatif": [
+            "• 60% Deposito/Tabungan",
+            "• 30% Sukuk Tabungan/ORI",
+            "• 10% Reksa dana pasar uang"
+        ],
+        "Konservatif": [
+            "• 40% Sukuk/ORI (kupon tetap)",
+            "• 30% Deposito",
+            "• 20% Reksa dana campuran",
+            "• 10% Franchise mikro modal ≤Rp50 juta"
+        ],
+        "Moderat": [
+            "• 30% Saham blue-chip / reksa dana campuran",
+            "• 20% Sukuk/ORI",
+            "• 15% Fintech/P2P Lending (pilih platform terdaftar OJK, risiko menengah)",
+            "• 15% Franchise/usaha skala menengah (Rp50–200 juta)",
+            "• 10% Emas",
+            "• 10% Kripto ≤5%"
+        ],
+        "Agresif": [
+            "• 40–45% Saham / reksa dana saham",
+            "• 15% Pasar obligasi sekunder (ORI/Sukuk)",
+            "• 10% Fintech/P2P Lending (pilih platform terdaftar OJK, risiko tinggi)",
+            "• 15% Franchise/usaha baru modal >Rp200 juta",
+            "• 10% Properti/Reksa dana properti",
+            "• 10% Kripto/Emas (risiko tinggi)"
+        ]
     }
-    return recommendations.get(category, {"labels": [], "sizes": [], "details": []})
+    return recommendations.get(category, [])
 
 # --- Main App ---
 def main():
     # --- Title and Instructions ---
     st.title("RISK PROFILE QUESTIONER")
     st.markdown("**(HumanisGroup - CTAP Series Tools)**")
-    st.markdown("""
-    **📋 PETUNJUK PENGISIAN:**
-    * Tidak ada jawaban “benar” atau “salah”, "baik" atau "buruk".
-    * Pilihlah **SATU** jawaban yang paling menggambarkan diri Anda.
-    * Jawablah dengan **JUJUR sebagaimana ADANYA** agar hasil dan rekomendasi sesuai kebutuhan Anda.
-    * Isilah dengan **lengkap 20 pertanyaan** yang ada.
-    * KAMI TIDAK MENYIMPAN JAWABAN ANDA, **Silahkan Screen-Shot SKOR dan REKOMENDASI**
-    """)
+st.markdown("""
+**📋 PETUNJUK PENGISIAN:**
+* Tidak ada jawaban “benar” atau “salah”, "baik" atau "buruk".
+* Pilihlah **SATU** jawaban yang paling menggambarkan diri Anda.
+* Jawablah dengan **JUJUR sebagaimana ADANYA** agar hasil dan rekomendasi sesuai kebutuhan Anda.
+* Isilah dengan **lengkap 20 pertanyaan** yang ada.
+* KAMI TIDAK MENYIMPAN JAWABAN ANDA, **Silahkan Screen-Shot SKOR dan REKOMENDASI**
+""")
 
     # --- Questions and Options ---
     questions = [
@@ -175,30 +157,12 @@ def main():
         st.subheader(f"Kategori Klasifikasi Risiko: {risk_category}")
 
         st.subheader("Contoh Alokasi Praktis:")
-        
-        # Get allocation data
-        allocation_data = get_allocation_recommendation(risk_category)
-        
-        # Display detailed recommendations
-        if allocation_data["details"]:
-            for item in allocation_data["details"]:
+        allocation_list = get_allocation_recommendation(risk_category)
+        if allocation_list:
+            for item in allocation_list:
                 st.markdown(item)
         else:
              st.write("Rekomendasi alokasi tidak tersedia untuk kategori ini.")
-
-        # Display pie chart if data is available
-        if allocation_data["labels"] and allocation_data["sizes"]:
-            try:
-                fig = px.pie(
-                    values=allocation_data["sizes"],
-                    names=allocation_data["labels"],
-                    title=f"Alokasi Rekomendasi untuk Profil Risiko {risk_category}",
-                    color_discrete_sequence=px.colors.sequential.RdBu
-                )
-                fig.update_traces(textposition='inside', textinfo='percent+label')
-                st.plotly_chart(fig, use_container_width=True)
-            except Exception as e:
-                st.warning("Gagal menampilkan grafik alokasi.")
 
         # Disclaimer (as per original document)
         # Note: Age is not collected, so this part is omitted from the app logic.
@@ -209,7 +173,6 @@ def main():
         - Dana darurat ≥6 bulan,
         - Tidak ada utang konsumtif tinggi.
         """)
-        
         # Additional disclaimer in red
         st.markdown("")
         st.markdown(
